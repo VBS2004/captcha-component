@@ -1,6 +1,10 @@
 package captcha
 
-import lib "github.com/kal72/go-captcha"
+import (
+	"fmt"
+
+	lib "github.com/kal72/go-captcha"
+)
 
 // CaptchaService defines the contract for generating and verifying captchas.
 // Any module (e.g. signup) imports this interface, never the concrete lib.
@@ -25,7 +29,14 @@ func NewCaptchaService(secretKey string) CaptchaService {
 		generate: func() (string, string, string, error) {
 			return cap.Generate()
 		},
-		verify: func(text, token string) error {
+		verify: func(text, token string) (err error) {
+			// go-captcha panics on malformed/empty tokens instead of returning
+			// an error. We recover here so callers always get a clean error value.
+			defer func() {
+				if r := recover(); r != nil {
+					err = fmt.Errorf("captcha verify panic: %v", r)
+				}
+			}()
 			return cap.Verify(text, token)
 		},
 	}
