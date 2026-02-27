@@ -1,0 +1,9 @@
+with-expecter: true
+packages:
+  backend/captcha:
+    config:
+      dir: ./captcha
+      output: ./captcha/mocks
+      outpkg: mocks
+    interfaces:
+      CaptchaService:
