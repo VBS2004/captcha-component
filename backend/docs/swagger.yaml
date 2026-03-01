@@ -1,0 +1,72 @@
+basePath: /api
+definitions:
+  captcha.CaptchaVerifyRequest:
+    properties:
+      text:
+        type: string
+      token:
+        type: string
+    required:
+    - text
+    - token
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a captcha service API for Skystrike.
+  title: Skystrike Captcha API
+  version: "1.0"
+paths:
+  /captcha/generate:
+    get:
+      description: Generates a new base64 captcha image and a corresponding token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Generate Captcha
+      tags:
+      - captcha
+  /captcha/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verifies if the provided captcha text matches the token
+      parameters:
+      - description: Captcha verification payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/captcha.CaptchaVerifyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Verify Captcha
+      tags:
+      - captcha
+swagger: "2.0"

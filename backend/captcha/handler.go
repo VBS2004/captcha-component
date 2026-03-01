@@ -34,6 +34,13 @@ func (h *CaptchaHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	rg.POST("/verify", h.verify)
 }
 
+// @Summary      Generate Captcha
+// @Description  Generates a new base64 captcha image and a corresponding token
+// @Tags         captcha
+// @Produce      json
+// @Success      200  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Router       /captcha/generate [get]
 func (h *CaptchaHandler) generate(c *gin.Context) {
 	base64Image, _, token, err := h.captchaSvc.Generate()
 	if err != nil {
@@ -46,6 +53,16 @@ func (h *CaptchaHandler) generate(c *gin.Context) {
 	})
 }
 
+// @Summary      Verify Captcha
+// @Description  Verifies if the provided captcha text matches the token
+// @Tags         captcha
+// @Accept       json
+// @Produce      json
+// @Param        request body CaptchaVerifyRequest true "Captcha verification payload"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]interface{}
+// @Failure      401  {object}  map[string]interface{}
+// @Router       /captcha/verify [post]
 func (h *CaptchaHandler) verify(c *gin.Context) {
 	var req CaptchaVerifyRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
